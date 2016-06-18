@@ -2,4 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/arm-network/v14
+/.vs
+*.sln
+*.deployproj
+Deployment.targets
+*.pssproj
