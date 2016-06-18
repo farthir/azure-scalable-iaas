@@ -45,6 +45,12 @@
       "metadata": {
         "description": "Admin password on all VMs."
       }
+    },
+    "globalNamingInfix": {
+      "type": "string",
+      "metadata": {
+        "description": "Global naming Infix for use with shared resources."
+      }
     }
   },
   "variables": {
@@ -62,9 +68,9 @@
     "saCount": "[length(variables('uniqueStringArray'))]",
     "vhdContainerName": "[concat(variables('namingInfix'), 'vhd')]",
     "osDiskName": "[concat(variables('namingInfix'), 'osdisk')]",
-    "virtualNetworkName": "[concat(variables('namingInfix'), 'vnet')]",
+    "virtualNetworkName": "[concat(parameters('globalNamingInfix'), 'vnet')]",
     "publicIPAddressName": "[concat(variables('namingInfix'), 'pip')]",
-    "subnetName": "[concat(variables('namingInfix'), 'subnet')]",
+    "subnetName": "[concat(parameters('globalNamingInfix'), 'subnet')]",
     "loadBalancerName": "[concat(variables('namingInfix'), 'lb')]",
     "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
     "lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName'))]",

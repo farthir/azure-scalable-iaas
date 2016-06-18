@@ -73,8 +73,8 @@
     }
   },
   "variables": {
-    "webVmssTemplateFileUri": "...201-vmss-linux-nat.json",
-    "appVmssTemplateFileUri": "...201-vmss-internal-loadbalancer.json",
+    "webVmssTemplateFileUri": "https://raw.githubusercontent.com/farthir/azure-scalable-iaas/master/arm-template-library/vmss/ubuntu-ext-loadbalancer.json",
+    "appVmssTemplateFileUri": "https://raw.githubusercontent.com/farthir/azure-scalable-iaas/master/arm-template-library/vmss/ubuntu-int-loadbalancer.json",
     "namingInfix": "[toLower(parameters('vmssNameAffix'))]",
     "webVmssName": "[concat(variables('namingInfix'), 'web')]",
     "appVmssName": "[concat(variables('namingInfix'), 'app')]",
