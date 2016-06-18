@@ -5,11 +5,12 @@
 Param(
     [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation,
     [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
+	[string] [Parameter(Mandatory=$true)] $Environment,
     [switch] $UploadArtifacts,
     [string] $StorageAccountName,
     [string] $StorageContainerName = $ResourceGroupName.ToLowerInvariant() + '-stageartifacts',
     [string] $TemplateFile = '..\arm-template\Templates\azuredeploy.json',
-    [string] $TemplateParametersFile = '..\arm-template\Templates\azuredeploy.parameters.json',
+    [string] $TemplateParametersFile = "..\arm-template\Templates\azuredeploy.$Environment.parameters.json",
     [string] $ArtifactStagingDirectory = '..\bin\Debug\staging',
     [string] $DSCSourceFolder = '..\DSC'
 )

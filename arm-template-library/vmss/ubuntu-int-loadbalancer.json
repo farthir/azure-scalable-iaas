@@ -100,7 +100,8 @@
     "imageReference": "[variables('osType')]",
     "computeApiVersion": "2016-03-30",
     "networkApiVersion": "2016-03-30",
-    "storageApiVersion": "2015-06-15"
+    "storageApiVersion": "2015-06-15",
+    "chefExtensionApiVersion": "2015-05-01-preview"
   },
   "resources": [
     {
@@ -313,9 +314,36 @@
                 }
               }
             ]
+          },
+          "extensionProfile": {
+            "extensions": [
+              {
+                "type": "Microsoft.Compute/virtualMachines/extensions",
+                "name": "chefextension",
+                "apiVersion": "[variables('chefExtensionApiVersion')]",
+                "location": "[resourceGroup().location]",
+                "properties": {
+                  "publisher": "Chef.Bootstrap.WindowsAzure",
+                  "type": "LinuxChefClient",
+                  "typeHandlerVersion": "1210.12",
+                  "settings": {
+                    "bootstrap_options": {
+                      //"chef_node_name": "[parameters('vmName')]",
+                      "chef_server_url": "https://api.chef.io/organizations/azure-scalable-iaas",
+                      "validation_client_name": "azure-scalable-iaas-validator"
+                    },
+                    "runlist": "",
+                    "validation_key_format": "base64encoded"
+                  },
+                  "protectedSettings": {
+                    "validation_key": ""
+                  }
+                }
+              }
+            ]
+          }
           }
         }
-      }
     }
   ]
 }

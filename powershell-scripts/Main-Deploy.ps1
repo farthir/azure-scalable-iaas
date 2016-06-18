@@ -5,4 +5,5 @@
 cd '~\Source\Repos\azure-scalable-iaas\powershell-scripts'
 $resourceGroupLocation = "northeurope"
 
-.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas"
+.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas" -Environment "test"
+.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas" -Environment "prod"

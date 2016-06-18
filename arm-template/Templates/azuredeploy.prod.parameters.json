@@ -1,0 +1,33 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmssNameAffix": {
+      "value": "farthi"
+    },
+    "adminUsername": {
+      "value": "tadmin"
+    },
+    "adminPassword": {
+      "value": ""
+    },
+    "webVmSku": {
+      "value": "Standard_A3"
+    },
+    "webUbuntuOSVersion": {
+      "value": "14.04.4-LTS"
+    },
+    "webInstanceCount": {
+      "value": 2
+    },
+    "appVmSku": {
+      "value": "Standard_A3"
+    },
+    "appUbuntuOSVersion": {
+      "value": "14.04.4-LTS"
+    },
+    "appInstanceCount": {
+      "value": 3
+    }
+  }
+}
