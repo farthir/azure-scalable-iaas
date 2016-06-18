@@ -129,7 +129,7 @@
             "value": "[parameters('webUbuntuOSVersion')]"
           },
           "vmssName": {
-            "value": "[variables('webVmssName')"
+            "value": "[variables('webVmssName')]"
           },
           "instanceCount": {
             "value": "[parameters('webInstanceCount')]"
@@ -165,7 +165,7 @@
             "value": "[parameters('appUbuntuOSVersion')]"
           },
           "vmssName": {
-            "value": "[variables('appVmssName')"
+            "value": "[variables('appVmssName')]"
           },
           "instanceCount": {
             "value": "[parameters('appInstanceCount')]"
