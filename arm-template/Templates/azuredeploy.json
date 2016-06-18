@@ -70,6 +70,38 @@
         "description": "Number of VM instances for the app tier (100 or less)."
       },
       "maxValue": 100
+    },
+    "chefServerUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Organization URL for the Chef Server. Example https://ChefServerDnsName.cloudapp.net/organizations/Orgname"
+      }
+    },
+    "chefValidationClientName": {
+      "type": "string",
+      "metadata": {
+        "description": "Validator key name for the organization. Example : MyOrg-validator"
+      }
+    },
+    "chefValidationKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "JSON Escaped Validation Key"
+      }
+    },
+    "webChefRunlist": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Web tier Run List to Execute"
+      }
+    },
+    "appChefRunlist": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional App tier Run List to Execute"
+      }
     }
   },
   "variables": {
@@ -140,7 +172,11 @@
           "adminPassword": {
             "value": "[parameters('adminPassword')]"
           },
-          "globalNamingInfix": { "value": "[variables('namingInfix')]" }
+          "globalNamingInfix": { "value": "[variables('namingInfix')]" },
+          "chefServerUrl": { "value": "[parameters('chefServerUrl')]" },
+          "chefValidationClientName": { "value": "[parameters('chefValidationClientName')]" },
+          "chefRunlist": { "value": "[parameters('webChefRunlist')]" },
+          "chefValidationKey": { "value": "[parameters('chefValidationKey')]" }
         }
       }
     },
@@ -176,7 +212,11 @@
           "adminPassword": {
             "value": "[parameters('adminPassword')]"
           },
-          "globalNamingInfix": { "value": "[variables('namingInfix')]" }
+          "globalNamingInfix": { "value": "[variables('namingInfix')]" },
+          "chefServerUrl": { "value": "[parameters('chefServerUrl')]" },
+          "chefValidationClientName": { "value": "[parameters('chefValidationClientName')]" },
+          "chefRunlist": { "value": "[parameters('appChefRunlist')]" },
+          "chefValidationKey": { "value": "[parameters('chefValidationKey')]" }
         }
       }
     }

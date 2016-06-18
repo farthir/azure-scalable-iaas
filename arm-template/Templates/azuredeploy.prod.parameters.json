@@ -11,6 +11,15 @@
     "adminPassword": {
       "value": ""
     },
+    "chefServerUrl": {
+      "value": ""
+    },
+    "chefValidationClientName": {
+      "value": ""
+    },
+    "chefValidationKey": {
+      "value": ""
+    },
     "webVmSku": {
       "value": "Standard_A3"
     },
@@ -20,6 +29,9 @@
     "webInstanceCount": {
       "value": 2
     },
+    "webChefRunlist": {
+      "value": ""
+    },
     "appVmSku": {
       "value": "Standard_A3"
     },
@@ -28,6 +40,9 @@
     },
     "appInstanceCount": {
       "value": 3
+    },
+    "appChefRunlist": {
+      "value": ""
     }
   }
 }

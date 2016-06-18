@@ -51,6 +51,31 @@
       "metadata": {
         "description": "Global naming Infix for use with shared resources."
       }
+    },
+    "chefServerUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Organization URL for the Chef Server. Example https://ChefServerDnsName.cloudapp.net/organizations/Orgname"
+      }
+    },
+    "chefValidationClientName": {
+      "type": "string",
+      "metadata": {
+        "description": "Validator key name for the organization. Example : MyOrg-validator"
+      }
+    },
+    "chefRunlist": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Run List to Execute"
+      }
+    },
+    "chefValidationKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "JSON Escaped Validation Key"
+      }
     }
   },
   "variables": {
@@ -89,9 +114,11 @@
       "version": "latest"
     },
     "imageReference": "[variables('osType')]",
+    "chefValidationKeyFormat": "base64encoded",
     "computeApiVersion": "2016-03-30",
     "networkApiVersion": "2016-03-30",
-    "storageApiVersion": "2015-06-15"
+    "storageApiVersion": "2015-06-15",
+    "chefExtensionApiVersion": "2015-05-01-preview"
   },
   "resources": [
     {
@@ -225,6 +252,33 @@
                       }
                     }
                   ]
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": [
+              {
+                "type": "Microsoft.Compute/virtualMachines/extensions",
+                "name": "chefextension",
+                "apiVersion": "[variables('chefExtensionApiVersion')]",
+                "location": "[resourceGroup().location]",
+                "properties": {
+                  "publisher": "Chef.Bootstrap.WindowsAzure",
+                  "type": "LinuxChefClient",
+                  "typeHandlerVersion": "1210.12",
+                  "settings": {
+                    "bootstrap_options": {
+                      //"chef_node_name": "[parameters('vmName')]",
+                      "chef_server_url": "[parameters('chefServerUrl')]",
+                      "validation_client_name": "[parameters('chefValidationClientName')]"
+                    },
+                    "runlist": "[parameters('chefRunList')]",
+                    "validation_key_format": "[variables('chefValidationKeyFormat')]"
+                  },
+                  "protectedSettings": {
+                    "validation_key": "[parameters('chefValidationKey')]"
+                  }
                 }
               }
             ]
