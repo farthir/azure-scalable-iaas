@@ -126,8 +126,7 @@
     "chefValidationKeyFormat": "base64encoded",
     "computeApiVersion": "2016-03-30",
     "networkApiVersion": "2016-03-30",
-    "storageApiVersion": "2015-06-15",
-    "chefExtensionApiVersion": "2015-05-01-preview"
+    "storageApiVersion": "2015-06-15"
   },
   "resources": [
     {
@@ -346,7 +345,6 @@
               {
                 "type": "Microsoft.Compute/virtualMachines/extensions",
                 "name": "chefextension",
-                "apiVersion": "[variables('chefExtensionApiVersion')]",
                 "location": "[resourceGroup().location]",
                 "properties": {
                   "publisher": "Chef.Bootstrap.WindowsAzure",
