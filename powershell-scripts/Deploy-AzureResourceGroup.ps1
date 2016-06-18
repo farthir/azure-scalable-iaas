@@ -4,12 +4,12 @@
 
 Param(
     [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation,
-    [string] $ResourceGroupName = 'azure-scalable-iaas',
+    [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
     [switch] $UploadArtifacts,
     [string] $StorageAccountName,
     [string] $StorageContainerName = $ResourceGroupName.ToLowerInvariant() + '-stageartifacts',
-    [string] $TemplateFile = '..\Templates\azuredeploy.json',
-    [string] $TemplateParametersFile = '..\Templates\azuredeploy.parameters.json',
+    [string] $TemplateFile = '..\arm-template\Templates\azuredeploy.json',
+    [string] $TemplateParametersFile = '..\arm-template\Templates\azuredeploy.parameters.json',
     [string] $ArtifactStagingDirectory = '..\bin\Debug\staging',
     [string] $DSCSourceFolder = '..\DSC'
 )

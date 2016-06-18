@@ -1,12 +1,184 @@
 ﻿{
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01-preview/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmssNameAffix": {
+      "type": "string",
+      "metadata": {
+        "description": "String used as a base for naming resources. Must be 6 characters in length and globally unique across Azure. A hash is prepended to this string for some resources, and resource-specific information is appended."
+      },
+      "maxLength": 6
     },
-    "variables": {
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin username on all VMs."
+      }
     },
-    "resources": [
-    ],
-    "outputs": {
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin password on all VMs."
+      }
+    },
+    "webVmSku": {
+      "type": "string",
+      "defaultValue": "Standard_A1",
+      "metadata": {
+        "description": "Size of VMs in the web tier VM Scale Set."
+      }
+    },
+    "webUbuntuOSVersion": {
+      "type": "string",
+      "defaultValue": "14.04.4-LTS",
+      "allowedValues": [
+        "15.10",
+        "14.04.4-LTS"
+      ],
+      "metadata": {
+        "description": "The Ubuntu version for the web tier VMs. This will pick a fully patched image of this given Ubuntu version. Allowed values are: 15.10, 14.04.4-LTS."
+      }
+    },
+    "webInstanceCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of VM instances for the web tier (100 or less)."
+      },
+      "maxValue": 100
+    },
+    "appVmSku": {
+      "type": "string",
+      "defaultValue": "Standard_A1",
+      "metadata": {
+        "description": "Size of VMs in the app tier VM Scale Set."
+      }
+    },
+    "appUbuntuOSVersion": {
+      "type": "string",
+      "defaultValue": "14.04.4-LTS",
+      "allowedValues": [
+        "15.10",
+        "14.04.4-LTS"
+      ],
+      "metadata": {
+        "description": "The Ubuntu version for the app tier VMs. This will pick a fully patched image of this given Ubuntu version. Allowed values are: 15.10, 14.04.4-LTS."
+      }
+    },
+    "appInstanceCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of VM instances for the app tier (100 or less)."
+      },
+      "maxValue": 100
     }
+  },
+  "variables": {
+    "webVmssTemplateFileUri": "...201-vmss-linux-nat.json",
+    "appVmssTemplateFileUri": "...201-vmss-internal-loadbalancer.json",
+    "namingInfix": "[toLower(parameters('vmssNameAffix'))]",
+    "webVmssName": "[concat(variables('namingInfix'), 'web')]",
+    "appVmssName": "[concat(variables('namingInfix'), 'app')]",
+    "addressPrefix": "10.0.0.0/16",
+    "subnetPrefix": "10.0.0.0/24",
+    "virtualNetworkName": "[concat(variables('namingInfix'), 'vnet')]",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+    "subnetName": "[concat(variables('namingInfix'), 'subnet')]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
+    "networkApiVersion": "2016-03-30"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "webVmss",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('webVmssTemplateFileUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vmSku": {
+            "value": "[parameters('webVmSku')]"
+          },
+          "ubuntuOSVersion": {
+            "value": "[parameters('webUbuntuOSVersion')]"
+          },
+          "vmssName": {
+            "value": "[variables('webVmssName')"
+          },
+          "instanceCount": {
+            "value": "[parameters('webInstanceCount')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "globalNamingInfix": { "value": "[variables('namingInfix')]" }
+        }
+      }
+    },
+    {
+      "name": "appVmss",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('appVmssTemplateFileUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vmSku": {
+            "value": "[parameters('appVmSku')]"
+          },
+          "ubuntuOSVersion": {
+            "value": "[parameters('appUbuntuOSVersion')]"
+          },
+          "vmssName": {
+            "value": "[variables('appVmssName')"
+          },
+          "instanceCount": {
+            "value": "[parameters('appInstanceCount')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "globalNamingInfix": { "value": "[variables('namingInfix')]" }
+        }
+      }
+    }
+  ]
 }
