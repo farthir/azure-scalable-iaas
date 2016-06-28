@@ -282,8 +282,8 @@
                 "id": "[variables('lbPoolID')]"
               },
               "protocol": "tcp",
-              "frontendPort": 80,
-              "backendPort": 80,
+              "frontendPort": 8080,
+              "backendPort": 8080,
               "enableFloatingIP": false,
               "idleTimeoutInMinutes": 5,
               "loadDistribution": "Default",
@@ -298,7 +298,7 @@
             "name": "tcpProbe",
             "properties": {
               "protocol": "tcp",
-              "port": 80,
+              "port": 8080,
               "intervalInSeconds": 5,
               "numberOfProbes": 2
             }

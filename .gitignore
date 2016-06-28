@@ -7,3 +7,5 @@
 *.deployproj
 Deployment.targets
 *.pssproj
+/.chef
+*.user
