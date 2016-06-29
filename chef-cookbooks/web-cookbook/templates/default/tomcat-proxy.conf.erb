@@ -1,10 +1,10 @@
 server {
   listen 80;
-  server_name fatestweb.northeurope.cloudapp.azure.com;
+  server_name <%= node['hostname'].byteslice(0, 9) %>.northeurope.cloudapp.azure.com;
   root /var/www/;
 
   location / {
-    proxy_pass http://10.0.0.4:8080/;
+    proxy_pass http://<%= node['web-cookbook']['app-lb-ip'] %>:8080/;
   }
 
   location ~* \.(png|css)$ {

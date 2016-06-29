@@ -200,7 +200,7 @@
               "backendPort": 80,
               "enableFloatingIP": false,
               "idleTimeoutInMinutes": 5,
-              "loadDistribution": "Default",
+              "loadDistribution": "SourceIP",
               "probe": {
                 "id": "[variables('lbProbeID')]"
               }
