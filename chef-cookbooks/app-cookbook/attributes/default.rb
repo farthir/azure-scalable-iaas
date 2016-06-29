@@ -1,5 +1,6 @@
 
 # specify later java version than default 6
 default['java']['jdk_version'] = '7'
-
-default['app-cookbook']['war-source'] = 'https://twconf.blob.core.windows.net/artefacts/companyNews.war'
+default['app-cookbook']['war-source'] = ''
+default['app-cookbook']['war-name'] = ''
+default['app-cookbook']['prevayler-dir'] = ''

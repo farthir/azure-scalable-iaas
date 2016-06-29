@@ -10,7 +10,7 @@ directory '/tmp/nginxchef' do
   action :create
 end
 
-directory '/var/www/companyNews' do
+directory "/var/www/#{node['web-cookbook']['static-dir-name']}" do
   action :create
   recursive true
 end
@@ -22,7 +22,7 @@ end
 
 bash 'extract-static' do
   code <<-EOH
-    bsdtar -xkf /tmp/nginxchef/static.zip -s'|[^/]*/||' -C /var/www/companyNews
+    bsdtar -xkf /tmp/nginxchef/static.zip -s'|[^/]*/||' -C "/var/www/#{node['web-cookbook']['static-dir-name']}"
     EOH
 end
 
