@@ -30,7 +30,7 @@
       "value": 1
     },
     "webChefRunlist": {
-      "value": ""
+      "value": "recipe[web-cookbook::default]"
     },
     "appVmSku": {
       "value": "Standard_A1"
@@ -42,7 +42,7 @@
       "value": 1
     },
     "appChefRunlist": {
-      "value": ""
+      "value": "recipe[app-cookbook::default]"
     }
   }
 }

@@ -251,7 +251,7 @@
                 "id": "[variables('subnetRef')]"
               },
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[variables('frontendIPAddress')"
+              "privateIPAddress": "[variables('frontendIPAddress')]"
             }
           }
         ],

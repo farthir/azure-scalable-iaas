@@ -2,15 +2,46 @@
 ARM templates and Chef cookbooks for deployment of a simple, scalable IaaS based web application.
 
 ## Requirements
-Tested only with:
+Tested with:
 
-1. Microsoft Azure
-2. Ubuntu 14.04.4-LTS
-3. nginx 1.4.6
-4. Apache Tomcat 8.5.3
+1. Microsoft Azure for hosting platform
+2. Hosted Chef for configuration management
+3. Ubuntu 14.04.4-LTS for OS
+4. nginx 1.4.6 for web tier service
+5. Apache Tomcat 8.5.3 for app tier service
+6. Windows 10 for deployment workstation with
+* Azure PowerShell Module 1.4.0
+* Chef DK 0.14.25
 
-## Use
+Prerequesites
 
+* [Azure PowerShell Module](http://aka.ms/webpi-azps) 
+* [Chef DK](https://downloads.chef.io/chef-dk/) 
+* [Azure Subscription](https://azure.microsoft.com/en-gb/free/)
+* [Hosted Chef](https://manage.chef.io/signup)
+
+
+## First Deployment
+
+1. Create new Chef Organisation
+2. Download and extract Chef Starter Kit
+3. Create local copy of this repo
+4. Update Azure deployment template parameter file(s) in ./azure-scalable-iaas/arm-template/Templates/azuredeploy.*.parameters.json
+* `chefValidationKey` must be JSON escaped string from validator pem
+* `vmssNameAffix` must be no longer than 6 alphanumeric characters
+5. Update web-cookbook attributes under ./azure-scalable-iaas/chef-cookbooks/web-cookbook/attributes/default.rb
+* `zip-source` must be URI to zip containing web app static content
+* `static-dir-name` must match URI root path for web app
+6. Update app-cookbook attributes under ./azure-scalable-iaas/chef-cookbooks/app-cookbook/attributes/default.rb
+* `war-source` must be URI to war containing web app dynamic content
+* `prevayler-dir` must be added if Prevayler is used and hardcoded to write to specific path
+7. Upload web-cookbook and app-cookbook to Hosted Chef instance with `knife upload`
+8. Modify path in to downloaded repo ./azure-scalable-iaas/powershell-scripts/Main-Deploy.ps1
+9. Run `Main-Deploy.ps1`
+
+## Scaling
+
+The number of instances in each tier can be modified by changing the `webInstanceCount` and `appInstanceCount` values in the Azure template parameter files and redeploying the template with `Main-Deploy.ps1`
 
 ## Licence and Authors
 The MIT License (MIT) 
