@@ -2,7 +2,7 @@
 # Cookbook Name:: app-cookbook
 # Recipe:: default
 #
-# Copyright (c) 2016 Rob Farthing, All Rights Reserved.
+# Copyright (c) 2016 farthir
 
 include_recipe 'java'
 

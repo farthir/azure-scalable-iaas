@@ -1,7 +1,18 @@
 # azure-scalable-iaas
 ARM templates and Chef cookbooks for deployment of a simple, scalable IaaS based web application.
 
-# Licence and Authors
+## Requirements
+Tested only with:
+
+1. Microsoft Azure
+2. Ubuntu 14.04.4-LTS
+3. nginx 1.4.6
+4. Apache Tomcat 8.5.3
+
+## Use
+
+
+## Licence and Authors
 The MIT License (MIT) 
 Copyright (c) 2016 farthir
 
@@ -11,7 +22,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Copyright
+## Copyright
 Certain ARM templates are Copyright 2016 Microsoft, Corp. under MIT Licence
 https://github.com/Azure/azure-quickstart-templates
 

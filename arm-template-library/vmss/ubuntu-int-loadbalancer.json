@@ -118,6 +118,7 @@
     "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd')]",
     "lbPoolID": "[concat(variables('lbID'),'/backendAddressPools/',variables('bePoolName'))]",
     "lbProbeID": "[concat(variables('lbID'),'/probes/tcpProbe')]",
+    "frontendIPAddress": "10.0.0.4",
     "osType": {
       "publisher": "Canonical",
       "offer": "UbuntuServer",
@@ -248,7 +249,9 @@
             "properties": {
               "subnet": {
                 "id": "[variables('subnetRef')]"
-              }
+              },
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[variables('frontendIPAddress')"
             }
           }
         ],
