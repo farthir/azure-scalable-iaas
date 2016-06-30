@@ -7,6 +7,6 @@
 *.deployproj
 Deployment.targets
 *.pssproj
-/.chef
+/.chef*
 *.user
 /parameters/*

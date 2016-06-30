@@ -7,6 +7,6 @@ $resourceGroupLocation = "northeurope"
 
 Add-AzureRmAccount
 
-.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas_test" -Environment "test"
-.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas_prod" -Environment "prod"
+.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-tw_test" -Environment "test"
+.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-tw_prod" -Environment "prod"
 
