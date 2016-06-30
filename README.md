@@ -26,18 +26,18 @@ Prerequesites
 1. Create new Chef Organisation
 2. Download and extract Chef Starter Kit
 3. Create local copy of this repo
-4. Update Azure deployment template parameter file(s) in ./azure-scalable-iaas/arm-template/Templates/azuredeploy.*.parameters.json
+4. Update Azure deployment template parameters in ./azure-scalable-iaas/arm-template/Templates/azuredeploy.*.parameters.json files
 * `chefValidationKey` must be JSON escaped string from validator pem
 * `vmssNameAffix` must be no longer than 6 alphanumeric characters
-5. Update web-cookbook attributes under ./azure-scalable-iaas/chef-cookbooks/web-cookbook/attributes/default.rb
+5. Update web-cookbook attributes under ./azure-scalable-iaas/cookbooks/web-cookbook/attributes/default.rb
 * `zip-source` must be URI to zip containing web app static content
 * `static-dir-name` must match URI root path for web app
-6. Update app-cookbook attributes under ./azure-scalable-iaas/chef-cookbooks/app-cookbook/attributes/default.rb
+6. Update app-cookbook attributes under ./azure-scalable-iaas/cookbooks/app-cookbook/attributes/default.rb
 * `war-source` must be URI to war containing web app dynamic content
 * `prevayler-dir` must be added if Prevayler is used and hardcoded to write to specific path
-7. Upload web-cookbook and app-cookbook to Hosted Chef instance with `knife upload`
-8. Modify path in to downloaded repo ./azure-scalable-iaas/powershell-scripts/Main-Deploy.ps1
-9. Run `Main-Deploy.ps1`
+7. Upload web-cookbook and app-cookbook to Hosted Chef instance with `berks install` and `berks upload`
+8. Modify `cd` path root in ./azure-scalable-iaas/powershell-scripts/Main-Deploy.ps1
+9. Validate resource group naming and run `Main-Deploy.ps1`
 
 ## Scaling
 
