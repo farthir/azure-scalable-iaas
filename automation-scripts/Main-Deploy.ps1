@@ -17,7 +17,7 @@ $webhookBody = $WebhookData.RequestBody | ConvertFrom-Json
 
 if (($webhookBody.environment -eq "test") -or ($webhookBody.environment -eq "prod"))
 {
-    #.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-$namePrefix$Environment" -Environment $Environment
+    .\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-$namePrefix$($webhookBody.environment)" -Environment $($webhookBody.environment) -namePrefix $namePrefix
 }
 else
 {
