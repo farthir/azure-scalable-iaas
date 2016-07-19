@@ -2,13 +2,24 @@
 # Main_Deploy.ps1
 #
 
-#cd '~\Desktop\devops\azure-scalable-iaas-master\powershell-scripts'
-$resourceGroupLocation = "westus"
+Param(
+    [string] $resourceGroupLocation = "westus",
+	[string] [Parameter(Mandatory=$true)] $namePrefix,
+	[object] $WebhookData
+)
 
 ## add aad app login
 $appCreds = Get-AutomationConnection -Name 'AzureRunAsConnection'
-
 Add-AzureRmAccount -CertificateThumbprint $appCreds.CertificateThumbprint -ApplicationId $appCreds.ApplicationId -ServicePrincipal -TenantId $appCreds.TenantId
 
-.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-tr_test" -Environment "test"
-#.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-tr_prod" -Environment "prod"
+# parse webhook body
+$webhookBody = $WebhookData.RequestBody | ConvertFrom-Json
+
+if (($webhookBody.environment -eq "test") -or ($webhookBody.environment -eq "prod"))
+{
+    #.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-$namePrefix$Environment" -Environment $Environment
+}
+else
+{
+    Write-Error "ERROR: Specified environment '$($webhookBody.environment)' does not match 'test' or 'prod'."
+}
