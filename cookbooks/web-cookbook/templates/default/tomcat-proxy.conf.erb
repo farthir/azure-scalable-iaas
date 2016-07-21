@@ -1,13 +1,13 @@
 server {
   listen 80;
-  server_name <%= node['hostname'].byteslice(0, 9) %>.northeurope.cloudapp.azure.com;
+  server_name <%= node['hostname'].byteslice(0, 9) %>.westus.cloudapp.azure.com;
   root /var/www/;
 
   location / {
     proxy_pass http://<%= node['web-cookbook']['app-lb-ip'] %>:8080/;
   }
 
-  location ~* \.(png|css|html)$ {
+  location ~* \.(png|css|html|gif)$ {
    expires 30d;
   }
 }
