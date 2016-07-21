@@ -215,4 +215,5 @@ New-AzureRmResourceGroupDeployment -Name ('azuredeploy-' + ((Get-Date).ToUnivers
                                    -TemplateUri $TemplateUri `
                                    -TemplateParameterObject $global:allParameters `
                                    @OptionalParameters `
-                                   -Force -Verbose
+                                   -Force -Verbose `
+								   -Mode Incremental
