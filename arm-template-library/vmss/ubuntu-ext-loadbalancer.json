@@ -120,7 +120,7 @@
     "computeApiVersion": "2016-03-30",
     "networkApiVersion": "2016-03-30",
     "storageApiVersion": "2015-06-15",
-    "chefEnvironment": "[concat('environment  ', substring(parameters('vmssName'), 2, 4))]"
+    "chefEnvironment": "[substring(parameters('vmssName'), 2, 4)"
   },
   "resources": [
     {
@@ -304,10 +304,10 @@
                   "settings": {
                     "bootstrap_options": {
                       "chef_server_url": "[parameters('chefServerUrl')]",
-                      "validation_client_name": "[parameters('chefValidationClientName')]"
+                      "validation_client_name": "[parameters('chefValidationClientName')]",
+                      "environment": "[variables('chefEnvironment')"
                     },
                     "runlist": "[parameters('chefRunList')]",
-                    "client_rb": "[variables('chefEnvironment')",
                     "validation_key_format": "[variables('chefValidationKeyFormat')]"
                   },
                   "protectedSettings": {
