@@ -10,3 +10,4 @@ Deployment.targets
 /.chef*
 *.user
 /parameters/*
+/scratch

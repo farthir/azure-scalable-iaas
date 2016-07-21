@@ -177,6 +177,7 @@ $chefServerUrl = Get-AutomationVariable -Name 'chefServerUrl'
 $chefValidationClientName = Get-AutomationVariable -Name 'chefValidationClientName'
 $adminUsername = Get-AutomationVariable -Name 'adminUsername'
 $adminPasswordSecretName = Get-AutomationVariable -Name 'adminPasswordSecretName'
+$completeWebHookUri = Get-AutomationVariable -Name 'completeWebHookUri'
 
 # convert to strings as Get-AutomationVariable does not seem to return strings (ResourceGroupDeployment below will error without this)
 Write-Host "Converting"
@@ -186,6 +187,7 @@ $chefServerUrl = $chefServerUrl.ToString()
 $chefValidationClientName = $chefValidationClientName.ToString()
 $adminUsername = $adminUsername.ToString()
 $adminPasswordSecretName = $adminPasswordSecretName.ToString()
+$completeWebHookUri = $completeWebHookUri.ToString()
 
 # output parameters to host for validation
 Write-Host "converted raw"
@@ -195,6 +197,7 @@ $chefServerUrl
 $chefValidationClientName
 $adminUsername
 $adminPasswordSecretName
+$completeWebHookUri
 	
 # get secret parameters
 $chefValidationKey = ConvertTo-SecureString -String (Get-AzureKeyVaultSecret -VaultName $confKeyVaultName -Name $chefValidationKeySecretName).SecretValueText -AsPlainText -Force
@@ -218,3 +221,6 @@ New-AzureRmResourceGroupDeployment -Name ('azuredeploy-' + ((Get-Date).ToUnivers
                                    @OptionalParameters `
                                    -Force -Verbose `
 								   -Mode Incremental
+								   
+$postParams = @{environment=$Environment}
+Invoke-WebRequest -Uri $completeWebHookUri -Method POST -Body $postParams -UseBasicParsing
