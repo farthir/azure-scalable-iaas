@@ -305,7 +305,7 @@
                     "bootstrap_options": {
                       "chef_server_url": "[parameters('chefServerUrl')]",
                       "validation_client_name": "[parameters('chefValidationClientName')]",
-                      "environment": "[variables('chefEnvironment')"
+                      "environment": "[variables('chefEnvironment')]"
                     },
                     "runlist": "[parameters('chefRunList')]",
                     "validation_key_format": "[variables('chefValidationKeyFormat')]"
