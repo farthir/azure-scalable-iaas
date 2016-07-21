@@ -2,11 +2,37 @@
 # Main_Deploy.ps1
 #
 
-cd '~\Source\Repos\azure-scalable-iaas\powershell-scripts'
-$resourceGroupLocation = "northeurope"
+Param(
+    [string] $resourceGroupLocation = "westus",
+	[string] [Parameter(Mandatory=$true)] $namePrefix,
+	#[object] $WebhookData,
 
-Add-AzureRmAccount
+	[string] $env,
+	[string] $confKeyVaultName,
+	[string] $chefValidationKeySecretName,
+	[string] $chefServerUrl,
+	[string] $chefValidationClientName,
+	[string] $adminUsername,
+	[string] $adminPasswordSecretName,
+    [string] $subscriptionId
+)
 
-.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-tw_test" -Environment "test"
-.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-tw_prod" -Environment "prod"
+## add aad app login
+#$appCreds = Get-AutomationConnection -Name 'AzureRunAsConnection'
+Add-AzureRmAccount #-CertificateThumbprint $appCreds.CertificateThumbprint -ApplicationId $appCreds.ApplicationId -ServicePrincipal -TenantId $appCreds.TenantId
+Select-AzureRmSubscription -SubscriptionId $subscriptionId
 
+# parse webhook body
+#$webhookBody = $WebhookData.RequestBody | ConvertFrom-Json
+
+$webhookBody = @{}
+$webhookBody.environment = $env
+
+if (($webhookBody.environment -eq "test") -or ($webhookBody.environment -eq "prod"))
+{
+    .\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation $resourceGroupLocation -ResourceGroupName "azure-scalable-iaas-$namePrefix$($webhookBody.environment)" -Environment $($webhookBody.environment) -namePrefix $namePrefix -confKeyVaultName $confKeyVaultName -chefValidationKeySecretName $chefValidationKeySecretName -chefServerUrl $chefServerUrl -chefValidationClientName $chefValidationClientName -adminUsername $adminUsername -adminPasswordSecretName $adminPasswordSecretName
+}
+else
+{
+    Write-Error "ERROR: Specified environment '$($webhookBody.environment)' does not match 'test' or 'prod'."
+}

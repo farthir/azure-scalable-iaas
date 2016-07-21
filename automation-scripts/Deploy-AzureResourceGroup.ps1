@@ -34,6 +34,7 @@ function Load-Parameters()
     curl $TemplateParametersUri -OutFile $tempParams
     $JsonContent = Get-Content ./$tempParams -Raw | ConvertFrom-Json
     $global:allParameters = Get-HashTableFromParameterFile $JsonContent
+	rm ./$tempParams
 }
 
 function ConvertTo-HashTable([PSCustomObject]$o)
@@ -215,4 +216,5 @@ New-AzureRmResourceGroupDeployment -Name ('azuredeploy-' + ((Get-Date).ToUnivers
                                    -TemplateUri $TemplateUri `
                                    -TemplateParameterObject $global:allParameters `
                                    @OptionalParameters `
-                                   -Force -Verbose
+                                   -Force -Verbose `
+								   -Mode Incremental

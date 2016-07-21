@@ -11,7 +11,7 @@ Param(
 ## add aad app login
 $appCreds = Get-AutomationConnection -Name 'AzureRunAsConnection'
 Add-AzureRmAccount -CertificateThumbprint $appCreds.CertificateThumbprint -ApplicationId $appCreds.ApplicationId -ServicePrincipal -TenantId $appCreds.TenantId
-
+Get-AzureRmSubscription
 # parse webhook body
 $webhookBody = $WebhookData.RequestBody | ConvertFrom-Json
 

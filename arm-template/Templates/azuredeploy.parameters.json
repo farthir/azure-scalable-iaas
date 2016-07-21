@@ -27,7 +27,7 @@
       "value": "14.04.4-LTS"
     },
     "webInstanceCount": {
-      "value": 2
+      "value": 1
     },
     "webChefRunlist": {
       "value": "recipe[web-cookbook::default]"
@@ -39,7 +39,7 @@
       "value": "14.04.4-LTS"
     },
     "appInstanceCount": {
-      "value": 3
+      "value": 1
     },
     "appChefRunlist": {
       "value": "recipe[app-cookbook::default]"
