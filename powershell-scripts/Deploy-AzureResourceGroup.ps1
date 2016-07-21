@@ -6,13 +6,21 @@ Param(
     [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation,
     [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
 	[string] [Parameter(Mandatory=$true)] $Environment,
+	[string] [Parameter(Mandatory=$true)] $namePrefix,
     [switch] $UploadArtifacts,
     [string] $StorageAccountName,
     [string] $StorageContainerName = $ResourceGroupName.ToLowerInvariant() + '-stageartifacts',
-    [string] $TemplateFile = '..\arm-template\Templates\azuredeploy.json',
-    [string] $TemplateParametersFile = "..\arm-template\Templates\azuredeploy.$Environment.parameters.json",
+    #[string] $TemplateFile = '..\arm-template\Templates\azuredeploy.json',
+    #[string] $TemplateParametersFile = "..\arm-template\Templates\azuredeploy.parameters.json",
     [string] $ArtifactStagingDirectory = '..\bin\Debug\staging',
-    [string] $DSCSourceFolder = '..\DSC'
+    [string] $DSCSourceFolder = '..\DSC',
+
+	[string] $confKeyVaultName,
+	[string] $chefValidationKeySecretName,
+	[string] $chefServerUrl,
+	[string] $chefValidationClientName,
+	[string] $adminUsername,
+	[string] $adminPasswordSecretName 
 )
 
 Import-Module Azure -ErrorAction SilentlyContinue
@@ -23,9 +31,85 @@ try {
 
 Set-StrictMode -Version 3
 
+$TemplateUri = "https://raw.githubusercontent.com/farthir/azure-scalable-iaas/$Environment/arm-template/Templates/azuredeploy.json"
+$TemplateParametersUri = "https://raw.githubusercontent.com/farthir/azure-scalable-iaas/$Environment/arm-template/Templates/azuredeploy.parameters.json"
+
+# custom functions to create hash table from parameters json for modification of parameters
+function Load-Parameters()
+{
+    $tempParams = "azuredeploy.parameters.json"
+    curl $TemplateParametersUri -OutFile $tempParams
+    $JsonContent = Get-Content ./$tempParams -Raw | ConvertFrom-Json
+    $global:allParameters = Get-HashTableFromParameterFile $JsonContent
+	rm ./$tempParams
+}
+
+function ConvertTo-HashTable([PSCustomObject]$o)
+{
+    $result = @{}
+    foreach ($field in ($o | Get-Member -MemberType NoteProperty))
+    {
+        $result.Add($field.Name, $(Convert-JsonValue $o.$($field.Name)))
+    }
+
+    return $result
+}
+
+function Convert-JsonValue($v)
+{
+    # Need to convert the PSCustomObjects that come from ConvertFrom-Json to hashtables, so that the ARM
+        # cmdlet can interpret the value correctly, otherwise it gets passed to the template as an XML string.
+        if ($v -ne $null)
+        {
+			if ($v.GetType().Name -eq "Object[]")
+			{
+                $newV = @()
+                foreach($elem in $v)
+                {
+                    if ($elem.GetType().Name -eq "PSCustomObject")
+                    {
+                        $newV += (ConvertTo-HashTable $elem)
+                    }
+                    else
+                    {
+                        $newV += $elem
+                    }
+                }
+    
+                $v = $newV
+		    }
+			elseif ($v.GetType().Name -eq "PSCustomObject")
+			{
+				# TODO: This does not appear to work, when there is a top-level complex object there are errors deploying
+				$newV = ConvertTo-HashTable $v
+				$v = $newV
+			}
+        }
+
+    if ($v -ne $null -and $v.GetType().Name -eq "Object[]")
+	{
+		return ,$v
+	}
+	else
+	{
+	    return $v
+	}
+}
+function Get-HashTableFromParameterFile($jsonContent)
+{
+    $hash = New-Object -TypeName Hashtable
+    $JsonContent.parameters | Get-Member -Type NoteProperty |  ForEach-Object {
+    $hash[$_.Name] = Convert-JsonValue $JsonContent.parameters.$($_.Name).value
+    }
+
+    return $hash
+}
+
+Load-Parameters
+
 $OptionalParameters = New-Object -TypeName Hashtable
-$TemplateFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $TemplateFile))
-$TemplateParametersFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $TemplateParametersFile))
+#$TemplateFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $TemplateFile))
+#$TemplateParametersFile = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($PSScriptRoot, $TemplateParametersFile))
 
 if ($UploadArtifacts) {
     # Convert relative paths to absolute paths if needed
@@ -92,13 +176,52 @@ if ($UploadArtifacts) {
         $OptionalParameters[$ArtifactsLocationSasTokenName] = $ArtifactsLocationSasToken
     }
 }
+<#
+# get private parameters
+$confKeyVaultName = Get-AutomationVariable -Name 'confKeyVaultName'
+$chefValidationKeySecretName = Get-AutomationVariable -Name 'chefValidationKeySecretName'
+$chefServerUrl = Get-AutomationVariable -Name 'chefServerUrl'
+$chefValidationClientName = Get-AutomationVariable -Name 'chefValidationClientName'
+$adminUsername = Get-AutomationVariable -Name 'adminUsername'
+$adminPasswordSecretName = Get-AutomationVariable -Name 'adminPasswordSecretName'
+
+# convert to strings as Get-AutomationVariable does not seem to return strings (ResourceGroupDeployment below will error without this)
+Write-Host "Converting"
+$confKeyVaultName = $confKeyVaultName.ToString()
+$chefValidationKeySecretName = $chefValidationKeySecretName.ToString()
+$chefServerUrl = $chefServerUrl.ToString()
+$chefValidationClientName = $chefValidationClientName.ToString()
+$adminUsername = $adminUsername.ToString()
+$adminPasswordSecretName = $adminPasswordSecretName.ToString()
+
+# output parameters to host for validation
+Write-Host "converted raw"
+$confKeyVaultName
+$chefValidationKeySecretName
+$chefServerUrl
+$chefValidationClientName
+$adminUsername
+$adminPasswordSecretName
+#>	
+# get secret parameters
+$chefValidationKey = ConvertTo-SecureString -String (Get-AzureKeyVaultSecret -VaultName $confKeyVaultName -Name $chefValidationKeySecretName).SecretValueText -AsPlainText -Force
+$adminPassword = ConvertTo-SecureString -String (Get-AzureKeyVaultSecret -VaultName $confKeyVaultName -Name $adminPasswordSecretName).SecretValueText -AsPlainText -Force
+
+# add private and secret parameters for splatting
+$global:allParameters["vmssNameAffix"] = $namePrefix + $Environment
+$global:allParameters["adminUsername"] = $adminUsername
+$global:allParameters["chefServerUrl"] = $chefServerUrl
+$global:allParameters["chefValidationClientName"] = $chefValidationClientName
+$OptionalParameters.Add("adminPassword", $adminPassword)
+$OptionalParameters.Add("chefValidationKey", $chefValidationKey)
 
 # Create or update the resource group using the specified template file and template parameters file
 New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation -Verbose -Force -ErrorAction Stop 
 
-New-AzureRmResourceGroupDeployment -Name ((Get-ChildItem $TemplateFile).BaseName + '-' + ((Get-Date).ToUniversalTime()).ToString('MMdd-HHmm')) `
+New-AzureRmResourceGroupDeployment -Name ('azuredeploy-' + ((Get-Date).ToUniversalTime()).ToString('MMdd-HHmm')) `
                                    -ResourceGroupName $ResourceGroupName `
-                                   -TemplateFile $TemplateFile `
-                                   -TemplateParameterFile $TemplateParametersFile `
+                                   -TemplateUri $TemplateUri `
+                                   -TemplateParameterObject $global:allParameters `
                                    @OptionalParameters `
-                                   -Force -Verbose
+                                   -Force -Verbose `
+								   -Mode Incremental
