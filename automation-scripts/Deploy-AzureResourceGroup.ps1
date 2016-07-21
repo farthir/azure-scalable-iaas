@@ -223,4 +223,4 @@ New-AzureRmResourceGroupDeployment -Name ('azuredeploy-' + ((Get-Date).ToUnivers
 								   -Mode Incremental
 								   
 $postParams = @{environment=$Environment}
-Invoke-WebRequest -Uri $completeWebHookUri -Method POST -Body $postParams
+Invoke-WebRequest -Uri $completeWebHookUri -Method POST -Body $postParams -UseBasicParsing
