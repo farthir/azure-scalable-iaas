@@ -7,7 +7,7 @@ server {
     proxy_pass http://<%= node['web-cookbook']['app-lb-ip'] %>:8080/;
   }
 
-  location ~* \.(png|css|html|gif)$ {
+  location ~* \.(png|css|html)$ {
    expires 30d;
   }
 }
