@@ -11,7 +11,7 @@ Param(
     [string] $StorageAccountName,
     [string] $StorageContainerName = $ResourceGroupName.ToLowerInvariant() + '-stageartifacts',
     #[string] $TemplateFile = '..\arm-template\Templates\azuredeploy.json',
-    #[string] $TemplateParametersFile = "..\arm-template\Templates\azuredeploy.$Environment.parameters.json",
+    #[string] $TemplateParametersFile = "..\arm-template\Templates\azuredeploy.parameters.json",
     [string] $ArtifactStagingDirectory = '..\bin\Debug\staging',
     [string] $DSCSourceFolder = '..\DSC'
 )
@@ -24,13 +24,13 @@ try {
 
 Set-StrictMode -Version 3
 
-$TemplateUri = "https://raw.githubusercontent.com/farthir/azure-scalable-iaas/master/arm-template/Templates/azuredeploy.json"
-$TemplateParametersUri = "https://raw.githubusercontent.com/farthir/azure-scalable-iaas/master/arm-template/Templates/azuredeploy.$Environment.parameters.json"
+$TemplateUri = "https://raw.githubusercontent.com/farthir/azure-scalable-iaas/$Environment/arm-template/Templates/azuredeploy.json"
+$TemplateParametersUri = "https://raw.githubusercontent.com/farthir/azure-scalable-iaas/$Environment/arm-template/Templates/azuredeploy.parameters.json"
 
 # custom functions to create hash table from parameters json for modification of parameters
 function Load-Parameters()
 {
-    $tempParams = "azuredeploy.$Environment.parameters.json"
+    $tempParams = "azuredeploy.parameters.json"
     curl $TemplateParametersUri -OutFile $tempParams
     $JsonContent = Get-Content ./$tempParams -Raw | ConvertFrom-Json
     $global:allParameters = Get-HashTableFromParameterFile $JsonContent
