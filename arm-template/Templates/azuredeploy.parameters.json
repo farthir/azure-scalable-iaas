@@ -33,13 +33,13 @@
       "value": "recipe[web-cookbook::default]"
     },
     "appVmSku": {
-      "value": "Standard_A2"
+      "value": "Standard_A1"
     },
     "appUbuntuOSVersion": {
       "value": "14.04.4-LTS"
     },
     "appInstanceCount": {
-      "value": 4
+      "value": 2
     },
     "appChefRunlist": {
       "value": "recipe[app-cookbook::default]"
