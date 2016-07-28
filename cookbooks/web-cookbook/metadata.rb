@@ -4,6 +4,6 @@ maintainer_email 'you@example.com'
 license 'all_rights'
 description 'Installs/Configures web-cookbook'
 long_description 'Installs/Configures web-cookbook'
-version '0.6.4'
+version '0.6.5'
 
 depends 'nginx'
